@@ -1,0 +1,85 @@
+html {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+}
+
+body {
+	background-color: #39424b;
+	background-image: 
+		-webkit-gradient(linear, 100% 0%, 0% 100%,
+		from(transparent),
+		color-stop(0.15, transparent),
+		color-stop(0.15, rgba(0, 0, 0, 0.1)),
+		color-stop(0.50, rgba(0, 0, 0, 0.1)),
+		color-stop(0.50, transparent),
+		color-stop(0.65, transparent),
+		color-stop(0.65, rgba(0, 0, 0, 0.1)),
+		to(rgba(0, 0, 0, 0.1)));
+	-webkit-background-size: 50px 50px;
+	margin: 0;
+	padding: 0;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+	font-family: sans-serif;
+}
+
+a {
+	color: #00e;
+}
+
+a:focus {
+	outline: thin dotted;
+}
+
+a:hover,
+a:active {
+	outline: 0;
+}
+
+#page {
+	width: 800px;
+	height: 100%;
+	background-color: #ffffff;
+	margin: 0px auto;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+canvas {
+	border: 1px #aaa solid;
+	-webkit-box-shadow: 1px 1px 7px rgba(153, 153, 153, 0.2);
+	-moz-box-shadow: 1px 1px 7px rgba(153, 153, 153, 0.2);
+	box-shadow: 1px 1px 7px rgba(153, 153, 153, 0.2);
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	background-color: #fefefe;
+	position: relative;
+	left: 50%;
+	margin-left: -250px;
+	margin-top: 20px;
+	margin-bottom: 40px;
+	display: none;
+}
+
+#letterpress {
+	text-align: center;
+	padding-top: 1px;
+}
+
+#letterpress h1 {
+	font-size: 60px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #504f4f;
+	text-shadow: 0px 2px 1px #bbbaba;
+}
+
