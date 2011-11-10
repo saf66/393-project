@@ -1,28 +1,34 @@
-jQuery.fn.log = function (msg) {
-	console.log("%s: %o", msg, this);
-	return this;
-};
-
 var Game = {
 
 	// position of pieces and game state
-	board: [],
-	state: 0,
+	state: {
+		//TODO: initial game state
+	},
+	moveset: {
+		//TODO: something like this
+		'king': [[0, 0], [0, 0]],
+		'rook': [[0, 0], [0, 0]],
+		'bishop': [[0, 0], [0, 0]],
+		'queen': [[0, 0], [0, 0]],
+		'knight': [[0, 0], [0, 0]],
+		'pawn': [[0, 0], [0, 0]]
+	},
+	turn: 0,
 
 	// graphics variables
 	canvas: document.getElementById('canvas'),
 	ctx: null,
 
 	// initialize all game variables
-	Initialize: function () {
-		console.log('Initialize');
+	initialize: function () {
+		console.log('initialize');
 
 		// check if canvas is supported
 		if (canvas && canvas.getContext) {
 			this.ctx = this.canvas.getContext('2d');
 
 			// draw the game board
-			var baseX = 0.5, baseY = 0.5, width = 50;
+			var baseX = 0.5, baseY = 0.5, width = this.canvas.width / 8;
 			for (var i = 0; i < 8; i++) {
 				for (var j = 0; j < 8; j++) {
 					var x = baseX + width * i, y = baseY + width * j;
@@ -32,39 +38,71 @@ var Game = {
 					}
 				}
 			}
+
+			//TODO: draw pieces
 		}
 	},
 
 	// load content, graphics, sound etc.
-	LoadContent: function () {
-		console.log('LoadContent');
+	loadContent: function () {
+		console.log('loadContent');
 
 		// add click event listener to the canvas
-		var g = this;
-		$(g.canvas).bind('click', function (event) {
-			g.Update(event);
-			g.Draw();
-		});
+		$(this.canvas).bind('click', this.choosePiece);
 	},
 
-	// update game variables, handle user input, perform calculations etc.
-	Update: function (event) {
-		var pos = [event.offsetX, event.offsetY];
-		console.log('Update: click at (%d, %d)', pos[0], pos[1]);
+	// pick up a game piece with the mouse
+	choosePiece: function (event) {
+		var pos = Game.getPosition(event);
+		var grid = Game.getGrid(pos);
+		console.log('choosePiece: %o', grid);
 
-		//TODO: compute grid location of click
-		//TODO: depending on state, either snap piece to mouse position or place piece
+		//TODO: check if there's a piece here
+		//TODO: check if current player is allowed to select that piece
+		if (true) {
+			// unbind the current click listener
+			$(Game.canvas).unbind('click', Game.choosePiece);
+
+			// snap to mouse; next click sets down the piece
+			$(Game.canvas).bind('mousemove', Game.movePiece);
+			$(Game.canvas).bind('click', Game.placePiece);
+		}
 	},
 
-	// draw game frame
-	Draw: function () {
-		console.log('Draw');
+	// make the piece follow the mouse position
+	movePiece: function (event) {
+		var pos = Game.getPosition(event);
+		//TODO: draw piece at these coordinates
+	},
 
-		//TODO: clear board
-		//TODO: draw pieces
+	placePiece: function (event) {
+		var pos = Game.getPosition(event);
+		var grid = Game.getGrid(pos);
+		console.log("placePiece: %o", grid);
+
+		//TODO: check if the player is allowed to place the piece here
+		if (true) {
+			// unbind the current listeners
+			$(Game.canvas).unbind('mousemove', Game.movePiece);
+			$(Game.canvas).unbind('click', Game.placePiece);
+
+			// next click picks up piece
+			$(Game.canvas).bind('click', Game.choosePiece);
+		}
+	},
+
+	// get the position of a click event in pixels
+	getPosition: function (event) {
+		return [event.offsetX, event.offsetY];
+	},
+
+	// compute grid location given coordinates in pixels
+	getGrid: function (pos) {
+		var w = this.canvas.width / 8;
+		return [Math.floor(pos[0] / w), Math.floor(pos[1] / w)];
 	}
 }
 
-Game.Initialize();
-Game.LoadContent();
+Game.initialize();
+Game.loadContent();
 
