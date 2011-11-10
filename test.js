@@ -8,16 +8,19 @@ var Game = {
 		console.log('Initialize');
 		// initialize all game variables
 		var canvas = document.getElementById('canvas');
-		var ctx = null;
 		if (canvas && canvas.getContext) {
 			// check whether browser support getting canvas context
-			ctx = canvas.getContext('2d');
-
-			ctx.fillStyle = "rgb(200,0,0)";
-			ctx.fillRect(10, 10, 55, 50);
-
-			ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-			ctx.fillRect(30, 30, 55, 50);
+			var ctx = canvas.getContext('2d');
+			var baseX = 0.5, baseY=0.5, width=50;
+			for (var i=0;i<8;i++){
+				for (var j=0;j<8;j++){
+					var x = baseX+width*i, y=baseY+width*j;
+					ctx.strokeRect(x,y,width,width);
+					if((i+j) %2 !=0){
+						ctx.fillRect(x,y,width,width);
+					}
+				}
+			}
 		}
 	},
 
