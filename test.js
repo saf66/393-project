@@ -1,41 +1,45 @@
+function clone(obj) {
+	if (null == obj || "object" != typeof obj) return obj;
+	var copy = obj.constructor();
+	for (var attr in obj) {
+		if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+	}
+	return copy;
+}
+
 var Game = {
 
 	// game state variables
 	pieces: {
 		//TODO: add valid moves for each piece
 		king: {
-			grid: [0, 0],
 			color: 0,
 			moves: []
 		},
 		rook: {
-			grid: [0, 0],
 			color: 0,
 			moves: []
 		},
 		bishop: {
-			grid: [0, 0],
 			color: 0,
 			moves: []
 		},
 		queen: {
-			grid: [0, 0],
 			color: 0,
 			moves: []
 		},
 		knight: {
-			grid: [0, 0],
 			color: 0,
 			moves: []
 		},
 		pawn: {
-			grid: [0, 0],
 			color: 0,
 			moves: []
 		},
 	},
 	state: [],
 	turn: 0,
+	previous: null,
 
 	// graphics variables
 	canvas: document.getElementById('canvas'),
@@ -70,7 +74,12 @@ var Game = {
 			}
 
 			//TODO: set initial game state
-			this.state[0][0] = this.pieces.pawn;
+			this.state[0][0] = clone(this.pieces.pawn);
+			this.state[1][0] = clone(this.pieces.pawn);
+			this.state[1][0].color = 1;
+			this.state[2][0] = clone(this.pieces.pawn);
+
+			//TODO: draw current state
 		}
 	},
 
@@ -88,16 +97,32 @@ var Game = {
 		var grid = Game.getGrid(pos);
 		console.log('choosePiece: %o', grid);
 
-		//TODO: check if there's a piece here
-		//TODO: check if current player is allowed to select that piece
-		if (true) {
-			// unbind the current click listener
-			$(Game.canvas).unbind('click', Game.choosePiece);
-
-			// snap to mouse; next click sets down the piece
-			$(Game.canvas).bind('mousemove', Game.movePiece);
-			$(Game.canvas).bind('click', Game.placePiece);
+		// check if there's a piece here
+		var piece = Game.getPieceAt(grid);
+		if (piece == null) {
+			return;
 		}
+		console.log('piece detected: %o', piece);
+
+		// check if current player is allowed to select that piece
+		if (piece.color != Game.turn) {
+			console.log('tried to select opponent piece');
+			return;
+		}
+
+		// unbind the current click listener
+		$(Game.canvas).unbind('click', Game.choosePiece);
+
+		// snap to mouse; next click sets down the piece
+		$(Game.canvas).bind('mousemove', Game.movePiece);
+		$(Game.canvas).bind('click', Game.placePiece);
+
+		// store coordinates
+		Game.previous = grid;
+	},
+
+	getPieceAt: function (grid) {
+		return Game.state[grid[0]][grid[1]];
 	},
 
 	// make the piece follow the mouse position
@@ -111,15 +136,31 @@ var Game = {
 		var grid = Game.getGrid(pos);
 		console.log("placePiece: %o", grid);
 
-		//TODO: check if the player is allowed to place the piece here
-		if (true) {
-			// unbind the current listeners
-			$(Game.canvas).unbind('mousemove', Game.movePiece);
-			$(Game.canvas).unbind('click', Game.placePiece);
-
-			// next click picks up piece
-			$(Game.canvas).bind('click', Game.choosePiece);
+		// check if there's a piece here
+		var piece = Game.getPieceAt(grid);
+		if (piece != null) {
+			// check who the piece belongs to
+			if (piece.color == Game.turn) {
+				console.log('place on your piece');
+				//TODO: check if
+			} else {
+				console.log('place on opponent piece');
+			}
 		}
+
+		//TODO: check if the move is valid according to game rules
+
+		// unbind the current listeners
+		$(Game.canvas).unbind('mousemove', Game.movePiece);
+		$(Game.canvas).unbind('click', Game.placePiece);
+
+		// next click picks up piece
+		$(Game.canvas).bind('click', Game.choosePiece);
+
+		// next turn
+		Game.turn++;
+		Game.turn = Game.turn % 2;
+		console.log('turn: %o', Game.turn);
 	},
 
 	// get the position of a click event in pixels
@@ -129,8 +170,24 @@ var Game = {
 
 	// compute grid location given coordinates in pixels
 	getGrid: function (pos) {
-		var w = this.canvas.width / 8;
-		return [Math.floor(pos[0] / w), Math.floor(pos[1] / w)];
+		var tile = this.canvas.width / 8;
+		return [Math.floor(pos[0] / tile), Math.floor(pos[1] / tile)];
+	},
+
+	// draw the current state to the canvas
+	draw: function () {
+		console.log("draw");
+
+		var tile = this.canvas.width / 8;
+		for (var i = 0; i < 8; i++) {
+			for (var j = 0; j < 8; j++) {
+				var piece = Game.state[i][j];
+				if (piece != null) {
+					var pos = [piece.grid[0] * tile, piece.grid[1] * tile];
+					//TODO: draw game piece at this position
+				}
+			}
+		}
 	}
 }
 
