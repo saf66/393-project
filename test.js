@@ -1,18 +1,40 @@
 var Game = {
 
-	// position of pieces and game state
-	state: {
-		//TODO: initial game state
+	// game state variables
+	pieces: {
+		//TODO: add valid moves for each piece
+		king: {
+			grid: [0, 0],
+			color: 0,
+			moves: []
+		},
+		rook: {
+			grid: [0, 0],
+			color: 0,
+			moves: []
+		},
+		bishop: {
+			grid: [0, 0],
+			color: 0,
+			moves: []
+		},
+		queen: {
+			grid: [0, 0],
+			color: 0,
+			moves: []
+		},
+		knight: {
+			grid: [0, 0],
+			color: 0,
+			moves: []
+		},
+		pawn: {
+			grid: [0, 0],
+			color: 0,
+			moves: []
+		},
 	},
-	moveset: {
-		//TODO: something like this
-		'king': [[0, 0], [0, 0]],
-		'rook': [[0, 0], [0, 0]],
-		'bishop': [[0, 0], [0, 0]],
-		'queen': [[0, 0], [0, 0]],
-		'knight': [[0, 0], [0, 0]],
-		'pawn': [[0, 0], [0, 0]]
-	},
+	state: [],
 	turn: 0,
 
 	// graphics variables
@@ -39,7 +61,16 @@ var Game = {
 				}
 			}
 
-			//TODO: draw pieces
+			// clear the game state
+			for (var i = 0; i < 8; i++) {
+				this.state[i] = [];
+				for (var j = 0; j < 8; j++) {
+					this.state[i][j] = null;
+				}
+			}
+
+			//TODO: set initial game state
+			this.state[0][0] = this.pieces.pawn;
 		}
 	},
 
