@@ -4,44 +4,64 @@ jQuery.fn.log = function (msg) {
 };
 
 var Game = {
+
+	// position of pieces and game state
+	board: [],
+	state: 0,
+
+	// graphics variables
+	canvas: document.getElementById('canvas'),
+	ctx: null,
+
+	// initialize all game variables
 	Initialize: function () {
 		console.log('Initialize');
-		// initialize all game variables
-		var canvas = document.getElementById('canvas');
+
+		// check if canvas is supported
 		if (canvas && canvas.getContext) {
-			// check whether browser support getting canvas context
-			var ctx = canvas.getContext('2d');
-			var baseX = 0.5, baseY=0.5, width=50;
-			for (var i=0;i<8;i++){
-				for (var j=0;j<8;j++){
-					var x = baseX+width*i, y=baseY+width*j;
-					ctx.strokeRect(x,y,width,width);
-					if((i+j) %2 !=0){
-						ctx.fillRect(x,y,width,width);
+			this.ctx = this.canvas.getContext('2d');
+
+			// draw the game board
+			var baseX = 0.5, baseY = 0.5, width = 50;
+			for (var i = 0; i < 8; i++) {
+				for (var j = 0; j < 8; j++) {
+					var x = baseX + width * i, y = baseY + width * j;
+					this.ctx.strokeRect(x, y, width, width);
+					if ((i + j) % 2 != 0) {
+						this.ctx.fillRect(x, y, width, width);
 					}
 				}
 			}
 		}
 	},
 
+	// load content, graphics, sound etc.
 	LoadContent: function () {
 		console.log('LoadContent');
-		// load content, graphics, sound etc.
-		var ourGame = this;
-		$(document).bind('keyup', function (event) {
-			ourGame.Update(event);
-			ourGame.Draw();
+
+		// add click event listener to the canvas
+		var g = this;
+		$(g.canvas).bind('click', function (event) {
+			g.Update(event);
+			g.Draw();
 		});
 	},
 
+	// update game variables, handle user input, perform calculations etc.
 	Update: function (event) {
-		console.log('Update: %o', event.keyCode);
-		// update game variables, handle user input, perform calculations etc.
+		var pos = [event.offsetX, event.offsetY];
+		console.log('Update: click at (%d, %d)', pos[0], pos[1]);
+
+		//TODO: compute grid location of click
+		//TODO: depending on state, either snap piece to mouse position or place piece
 	},
 
+	// draw game frame
 	Draw: function () {
 		console.log('Draw');
-		// draw game frame
+
+		//TODO: clear board
+		//TODO: draw pieces
 	}
 }
 
