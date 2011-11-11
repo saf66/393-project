@@ -68,8 +68,9 @@ function Piece(type, loc, color)
 //Tile constructor
 function Tile(row,col){
 	this.onMe = new Array();
-	this.row = row;
-	this.col = col;
+	this.loc = new Array(2);
+	this.loc[0] = row;
+	this.loc[1] = col;
 	return;
 	
 	//given a piece and a target tuple, can that piece go there?
