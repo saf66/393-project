@@ -89,15 +89,10 @@ var Game = {
 
 			// draw current state
 			Game.draw();
+
+			// add click event listener to the canvas
+			$(Game.canvas).bind('click', Game.choosePiece);
 		}
-	},
-
-	// load content, graphics, sound etc.
-	loadContent: function () {
-		console.log('loadContent');
-
-		// add click event listener to the canvas
-		$(Game.canvas).bind('click', Game.choosePiece);
 	},
 
 	// pick up a game piece with the mouse
@@ -166,10 +161,10 @@ var Game = {
 		if (piece != null) {
 			// check who the piece belongs to
 			if (piece.color == Game.turn) {
-				console.log('place on your piece');
+				console.log('place on your piece: %o', piece.type);
 				//TODO
 			} else {
-				console.log('place on opponent piece');
+				console.log('place on opponent piece: %o', piece.type);
 				//TODO
 			}
 		} else {
@@ -182,6 +177,8 @@ var Game = {
 		}
 
 		//TODO: check if the move is valid according to game rules
+		if (!cancelMove) {
+		}
 
 		// snap the piece to the grid
 		Game.setPieceAt(grid, Game.previous.piece);
@@ -256,22 +253,22 @@ var Game = {
 		c.beginPath();
 		switch (type) {
 			case 'king':
-				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
+				c.arc(pos[0], pos[1], 20, 0, Math.PI * 2, true);
 				break;
 			case 'rook':
-				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
+				c.arc(pos[0], pos[1], 20, 0, Math.PI * 2, true);
 				break;
 			case 'bishop':
-				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
+				c.arc(pos[0], pos[1], 20, 0, Math.PI * 2, true);
 				break;
 			case 'queen':
-				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
+				c.arc(pos[0], pos[1], 20, 0, Math.PI * 2, true);
 				break;
 			case 'knight':
-				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
+				c.arc(pos[0], pos[1], 20, 0, Math.PI * 2, true);
 				break;
 			case 'pawn':
-				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
+				c.arc(pos[0], pos[1], 20, 0, Math.PI * 2, true);
 				break;
 		}
 		switch (color) {
@@ -286,9 +283,17 @@ var Game = {
 		}
 		c.stroke();
 		c.fill();
+		switch (color) {
+			case 0:
+				c.fillStyle = 'white';
+				break;
+			case 1:
+				c.fillStyle = 'black';
+				break;
+		}
+		c.fillText(type, pos[0] - 12, pos[1] + 3);
 	}
 }
 
 Game.initialize();
-Game.loadContent();
 
