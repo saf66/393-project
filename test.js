@@ -13,33 +13,42 @@ var Game = {
 	pieces: {
 		//TODO: add valid moves for each piece
 		king: {
+			type: 'king',
 			color: 0,
 			moves: []
 		},
 		rook: {
+			type: 'rook',
 			color: 0,
 			moves: []
 		},
 		bishop: {
+			type: 'bishop',
 			color: 0,
 			moves: []
 		},
 		queen: {
+			type: 'queen',
 			color: 0,
 			moves: []
 		},
 		knight: {
+			type: 'knight',
 			color: 0,
 			moves: []
 		},
 		pawn: {
+			type: 'pawn',
 			color: 0,
 			moves: []
 		},
 	},
 	state: [],
 	turn: 0,
-	previous: null,
+	previous: {
+		piece: null,
+		grid: null
+	},
 
 	// graphics variables
 	canvas: document.getElementById('canvas'),
@@ -51,35 +60,36 @@ var Game = {
 
 		// check if canvas is supported
 		if (canvas && canvas.getContext) {
-			this.ctx = this.canvas.getContext('2d');
+			Game.ctx = Game.canvas.getContext('2d');
 
 			// draw the game board
-			var baseX = 0.5, baseY = 0.5, width = this.canvas.width / 8;
+			var baseX = 0.5, baseY = 0.5, width = Game.canvas.width / 8;
 			for (var i = 0; i < 8; i++) {
 				for (var j = 0; j < 8; j++) {
 					var x = baseX + width * i, y = baseY + width * j;
-					this.ctx.strokeRect(x, y, width, width);
+					Game.ctx.strokeRect(x, y, width, width);
 					if ((i + j) % 2 != 0) {
-						this.ctx.fillRect(x, y, width, width);
+						Game.ctx.fillRect(x, y, width, width);
 					}
 				}
 			}
 
 			// clear the game state
 			for (var i = 0; i < 8; i++) {
-				this.state[i] = [];
+				Game.state[i] = [];
 				for (var j = 0; j < 8; j++) {
-					this.state[i][j] = null;
+					Game.state[i][j] = null;
 				}
 			}
 
 			//TODO: set initial game state
-			this.state[0][0] = clone(this.pieces.pawn);
-			this.state[1][0] = clone(this.pieces.pawn);
-			this.state[1][0].color = 1;
-			this.state[2][0] = clone(this.pieces.pawn);
+			Game.state[0][0] = clone(Game.pieces.pawn);
+			Game.state[1][0] = clone(Game.pieces.pawn);
+			Game.state[1][0].color = 1;
+			Game.state[2][0] = clone(Game.pieces.pawn);
 
-			//TODO: draw current state
+			// draw current state
+			Game.draw();
 		}
 	},
 
@@ -88,7 +98,7 @@ var Game = {
 		console.log('loadContent');
 
 		// add click event listener to the canvas
-		$(this.canvas).bind('click', this.choosePiece);
+		$(Game.canvas).bind('click', Game.choosePiece);
 	},
 
 	// pick up a game piece with the mouse
@@ -110,6 +120,11 @@ var Game = {
 			return;
 		}
 
+		// snap the piece to the mouse
+		Game.setPieceAt(grid, null);
+		Game.draw();
+		Game.drawPiece(piece.type, piece.color, pos);
+
 		// unbind the current click listener
 		$(Game.canvas).unbind('click', Game.choosePiece);
 
@@ -117,18 +132,26 @@ var Game = {
 		$(Game.canvas).bind('mousemove', Game.movePiece);
 		$(Game.canvas).bind('click', Game.placePiece);
 
-		// store coordinates
-		Game.previous = grid;
+		// store previous piece
+		Game.previous.piece = piece;
+		Game.previous.grid = grid;
 	},
 
 	getPieceAt: function (grid) {
 		return Game.state[grid[0]][grid[1]];
 	},
 
+	setPieceAt: function (grid, piece) {
+		Game.state[grid[0]][grid[1]] = piece;
+	},
+
 	// make the piece follow the mouse position
 	movePiece: function (event) {
 		var pos = Game.getPosition(event);
-		//TODO: draw piece at these coordinates
+		var piece = Game.previous.piece;
+		//TODO: this method leaves trails of pieces across the canvas
+		// draw piece at these coordinates
+		Game.drawPiece(piece.type, piece.color, pos);
 	},
 
 	placePiece: function (event) {
@@ -142,13 +165,18 @@ var Game = {
 			// check who the piece belongs to
 			if (piece.color == Game.turn) {
 				console.log('place on your piece');
-				//TODO: check if
+				//TODO
 			} else {
 				console.log('place on opponent piece');
+				//TODO
 			}
 		}
 
 		//TODO: check if the move is valid according to game rules
+
+		// snap the piece to the grid
+		Game.setPieceAt(grid, Game.previous.piece);
+		Game.draw();
 
 		// unbind the current listeners
 		$(Game.canvas).unbind('mousemove', Game.movePiece);
@@ -170,7 +198,7 @@ var Game = {
 
 	// compute grid location given coordinates in pixels
 	getGrid: function (pos) {
-		var tile = this.canvas.width / 8;
+		var tile = Game.canvas.width / 8;
 		return [Math.floor(pos[0] / tile), Math.floor(pos[1] / tile)];
 	},
 
@@ -178,16 +206,53 @@ var Game = {
 	draw: function () {
 		console.log("draw");
 
-		var tile = this.canvas.width / 8;
+		// iterate over all game tiles
+		var tile = Game.canvas.width / 8;
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 8; j++) {
 				var piece = Game.state[i][j];
 				if (piece != null) {
-					var pos = [piece.grid[0] * tile, piece.grid[1] * tile];
-					//TODO: draw game piece at this position
+					var pos = [i * tile + tile / 2, j * tile + tile / 2];
+					// draw game piece at this position
+					Game.drawPiece(piece.type, piece.color, pos);
 				}
 			}
 		}
+	},
+
+	// draw a game piece at a specified position (in pixels)
+	drawPiece: function (type, color, pos) {
+		//TODO: use the drawImage() method instead
+		// https://developer.mozilla.org/en/Canvas_tutorial%3AUsing_images
+		var c = Game.ctx;
+		c.beginPath();
+		switch (type) {
+			case 'king':
+				break;
+			case 'rook':
+				break;
+			case 'bishop':
+				break;
+			case 'queen':
+				break;
+			case 'knight':
+				break;
+			case 'pawn':
+				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
+				break;
+		}
+		switch (color) {
+			case 0:
+				c.strokeStyle = '#FFFFFF';
+				c.fillStyle = '#000000';
+				break;
+			case 1:
+				c.strokeStyle = '#000000';
+				c.fillStyle = '#FFFFFF';
+				break;
+		}
+		c.stroke();
+		c.fill();
 	}
 }
 
