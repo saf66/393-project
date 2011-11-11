@@ -44,7 +44,7 @@ var Game = {
 		},
 	},
 	state: [],
-	turn: 0,
+	turn: 1,
 	previous: {
 		piece: null,
 		grid: null
@@ -61,18 +61,7 @@ var Game = {
 		// check if canvas is supported
 		if (canvas && canvas.getContext) {
 			Game.ctx = Game.canvas.getContext('2d');
-
-			// draw the game board
-			var baseX = 0.5, baseY = 0.5, width = Game.canvas.width / 8;
-			for (var i = 0; i < 8; i++) {
-				for (var j = 0; j < 8; j++) {
-					var x = baseX + width * i, y = baseY + width * j;
-					Game.ctx.strokeRect(x, y, width, width);
-					if ((i + j) % 2 != 0) {
-						Game.ctx.fillRect(x, y, width, width);
-					}
-				}
-			}
+			Game.ctx.save();
 
 			// clear the game state
 			for (var i = 0; i < 8; i++) {
@@ -82,11 +71,21 @@ var Game = {
 				}
 			}
 
-			//TODO: set initial game state
-			Game.state[0][0] = clone(Game.pieces.pawn);
-			Game.state[1][0] = clone(Game.pieces.pawn);
-			Game.state[1][0].color = 1;
-			Game.state[2][0] = clone(Game.pieces.pawn);
+			// set initial game state
+			var a = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook']
+			for (var i = 0; i < a.length; i++) {
+				Game.state[i][0] = clone(Game.pieces[a[i]]);
+				Game.state[i][7] = clone(Game.pieces[a[i]]);
+			}
+			for (var i = 0; i < 8; i++) {
+				Game.state[i][1] = clone(Game.pieces.pawn);
+				Game.state[i][6] = clone(Game.pieces.pawn);
+			}
+			for (var i = 0; i < 8; i++) {
+				for (var j = 6; j < 8; j++) {
+					Game.state[i][j].color = 1;
+				}
+			}
 
 			// draw current state
 			Game.draw();
@@ -112,7 +111,7 @@ var Game = {
 		if (piece == null) {
 			return;
 		}
-		console.log('piece detected: %o', piece);
+		console.log('piece detected: %o %o', piece.type, piece.color);
 
 		// check if current player is allowed to select that piece
 		if (piece.color != Game.turn) {
@@ -149,12 +148,15 @@ var Game = {
 	movePiece: function (event) {
 		var pos = Game.getPosition(event);
 		var piece = Game.previous.piece;
-		//TODO: this method leaves trails of pieces across the canvas
+		//TODO: it's really inefficient to redraw the entire game board every time the mouse moves
+		//TODO: look into ctx.save() and ctx.restore()
+		Game.draw();
 		// draw piece at these coordinates
 		Game.drawPiece(piece.type, piece.color, pos);
 	},
 
 	placePiece: function (event) {
+		var cancelMove = false;
 		var pos = Game.getPosition(event);
 		var grid = Game.getGrid(pos);
 		console.log("placePiece: %o", grid);
@@ -169,6 +171,13 @@ var Game = {
 			} else {
 				console.log('place on opponent piece');
 				//TODO
+			}
+		} else {
+			// placing in empty space
+			var prev = Game.previous.grid;
+			if (prev != null && prev[0] == grid[0] && prev[1] == grid[1]) {
+				console.log('place at same place');
+				cancelMove = true;
 			}
 		}
 
@@ -186,9 +195,11 @@ var Game = {
 		$(Game.canvas).bind('click', Game.choosePiece);
 
 		// next turn
-		Game.turn++;
-		Game.turn = Game.turn % 2;
-		console.log('turn: %o', Game.turn);
+		if (!cancelMove) {
+			Game.turn++;
+			Game.turn = Game.turn % 2;
+			console.log('turn: %o', Game.turn);
+		}
 	},
 
 	// get the position of a click event in pixels
@@ -204,7 +215,24 @@ var Game = {
 
 	// draw the current state to the canvas
 	draw: function () {
-		console.log("draw");
+		// clear the game board
+		var c = Game.ctx;
+		var rect = [Game.canvas.width, Game.canvas.height];
+		c.clearRect(0, 0, rect[0], rect[1]);
+
+		// draw the game board
+		c.strokeStyle = 'black';
+		c.fillStyle = 'black';
+		var baseX = 0.5, baseY = 0.5, width = Game.canvas.width / 8;
+		for (var i = 0; i < 8; i++) {
+			for (var j = 0; j < 8; j++) {
+				var x = baseX + width * i, y = baseY + width * j;
+				c.strokeRect(x, y, width, width);
+				if ((i + j) % 2 != 0) {
+					c.fillRect(x, y, width, width);
+				}
+			}
+		}
 
 		// iterate over all game tiles
 		var tile = Game.canvas.width / 8;
@@ -228,14 +256,19 @@ var Game = {
 		c.beginPath();
 		switch (type) {
 			case 'king':
+				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
 				break;
 			case 'rook':
+				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
 				break;
 			case 'bishop':
+				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
 				break;
 			case 'queen':
+				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
 				break;
 			case 'knight':
+				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
 				break;
 			case 'pawn':
 				c.arc(pos[0], pos[1], 15, 0, Math.PI * 2, true);
@@ -243,12 +276,12 @@ var Game = {
 		}
 		switch (color) {
 			case 0:
-				c.strokeStyle = '#FFFFFF';
-				c.fillStyle = '#000000';
+				c.strokeStyle = 'white';
+				c.fillStyle = 'black';
 				break;
 			case 1:
-				c.strokeStyle = '#000000';
-				c.fillStyle = '#FFFFFF';
+				c.strokeStyle = 'black';
+				c.fillStyle = 'white';
 				break;
 		}
 		c.stroke();
