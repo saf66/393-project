@@ -223,23 +223,29 @@ var Game = {
 		var rect = [Game.canvas.width, Game.canvas.height];
 		c.clearRect(0, 0, rect[0], rect[1]);
 
-		// iterate over all game tiles
-		var tile = Game.canvas.width / 8;
-		var half = tile / 2;
+		// draw the game board
+		c.strokeStyle = 'black';
+		c.fillStyle = 'black';
+		var baseX = 0.5, baseY = 0.5, width = Game.canvas.width / 8;
 		for (var i = 0; i < 8; i++) {
 			for (var j = 0; j < 8; j++) {
-				var pos = [i * tile, j * tile];
-
-				// draw tile at this position
+				var x = baseX + width * i, y = baseY + width * j;
+				c.strokeRect(x, y, width, width);
 				if ((i + j) % 2 != 0) {
-					c.fillStyle = 'black';
-					c.fillRect(pos[0], pos[1], tile, tile);
+					c.fillRect(x, y, width, width);
 				}
+			}
+		}
 
-				// draw game piece at this position
+		// iterate over all game tiles
+		var tile = Game.canvas.width / 8;
+		for (var i = 0; i < 8; i++) {
+			for (var j = 0; j < 8; j++) {
 				var piece = Game.state[i][j];
 				if (piece != null) {
-					Game.drawPiece(piece.type, piece.color, [pos[0] + half, pos[1] + half]);
+					var pos = [i * tile + tile / 2, j * tile + tile / 2];
+					// draw game piece at this position
+					Game.drawPiece(piece.type, piece.color, pos);
 				}
 			}
 		}
