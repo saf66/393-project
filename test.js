@@ -152,6 +152,8 @@ var Game = {
 
 	placePiece: function (event) {
 		var cancelMove = false;
+		if(// piece fails move piece test)
+			cancelMove = true;
 		var pos = Game.getPosition(event);
 		var grid = Game.getGrid(pos);
 		console.log("placePiece: %o", grid);
