@@ -1,3 +1,4 @@
+
 function clone(obj) {
 	if (null == obj || "object" != typeof obj) return obj;
 	var copy = obj.constructor();
@@ -152,8 +153,8 @@ var Game = {
 
 	placePiece: function (event) {
 		var cancelMove = false;
-		if(// piece fails move piece test)
-			cancelMove = true;
+		//if(// TODO: piece fails move piece test)
+			//cancelMove = true;
 		var pos = Game.getPosition(event);
 		var grid = Game.getGrid(pos);
 		console.log("placePiece: %o", grid);
@@ -208,7 +209,10 @@ var Game = {
 
 	// compute grid location given coordinates in pixels
 	getGrid: function (pos) {
+		console.log(Game.canvas.width);
+		
 		var tile = Game.canvas.width / 8;
+		console.log(pos[0]);
 		return [Math.floor(pos[0] / tile), Math.floor(pos[1] / tile)];
 	},
 
