@@ -13,21 +13,43 @@
 		
 	</div>
 <script type="text/javascript">
+	var here;
 	function setUp() {
-		//setup before a test case
-	}
-	function tearDown() {
-		//cleanup after a test case
+		//always start pieces at 3,3
+		here = [3,3];
 	}
 	function testBoard() {
-		var canv = document.createElement('canvas');
-		canv.setAttribute('id','canvas');
-		document.getElementById('test').appendChild(canv);
-		Game.initialize();
 		assertNotNull("game object",Game);
-		assertNotNull("canvas object",Game.canvas);
-		assertNotNull("2d canvas context",Game.canvas.getContext('2d'));
-		
+	}
+	function testMoves() {
+		var there = here;
+		assert(validateMove("",here,there,null));
+	}
+	function testKingMoves(){
+		var there = [3,4];
+		assert(validateMove("king",here,there,1));
+	}
+	function testRookMoves(){
+		var there = [3,4];
+		assert(validateMove("rook",here,there,1));
+	}
+	function testBishopMoves(){
+		var there = [4,4];
+		assert(validateMove("bishop",here,there,1));
+	}
+	function testQueenMoves(){
+		var there = [4,4];
+		assert(validateMove("queen",here,there,1));
+	}
+	function testKnightMoves(){
+		var there = [4,5];
+		assert(validateMove("knight",here,there,1));
+	}
+	function testPawnMoves(){
+		var there = [3,4];
+		assert(validateMove("pawn",here,there,1));
+	}
+	function testCaptures(){
 	}
 </script>
 </body>
