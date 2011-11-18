@@ -1,3 +1,170 @@
+
+	//given a piece and a target tuple, can that piece go there?
+ function validateMove( type, here, there, color)
+ {
+ 	if(here[0]==there[0] && here[1]==there[1]) 
+ 		return true;
+
+ 	switch(type)
+ 		{//Game.getPieceAt(grid)
+ 			case("rook"):{
+ 				
+ 				if(here[0]==there[0])
+ 				{	if (there[1]> here[1]) var inc = -1;
+ 					else var inc = 1;
+ 					
+ 					for(var y = there[1] + inc; y != here[1]; y += inc) 
+ 						{
+ 							if(Game.getPieceAt( [here[0], y]) != null)
+ 								return false;
+ 						}
+ 					return true;
+ 				}
+ 				
+ 				if(here[1]==there[1])
+ 				{	if (there[0] > here[0]) var inc = -1;
+ 					else var inc = 1;
+ 					
+ 					for(var x = there[0] + inc; x != here[0]; x += inc) 
+ 						{
+ 							if(Game.getPieceAt( [x, here[1] ]) != null)
+ 								return false;
+ 						}
+ 					return true;
+ 				}
+ 				
+ 				return false;
+ 				break;
+
+ 				}
+ 			case("knight"):{
+ 				if(there[0] == here[0] + 2 || there[0] == here[0] - 2)
+ 						if(there[1] == here[1]+1 || there[1] == here[1]-1)
+ 							return true;
+ 				if(there[1] == here[1] + 2 || there[1] == here[1] - 2)
+ 						if(there[0] == here[0]+1 || there[0] == here[0]-1)
+ 							return true;
+ 				return false;
+ 				break;
+ 			}
+ 			case("bishop"):{
+ 				
+ 				if(!(Math.abs(here[0]-there[0]) == Math.abs(here[1]-there[1])))
+ 					return false;
+ 					
+ 					if (there[1]> here[1]) var yinc = -1;
+ 					else var yinc = 1;
+ 					
+ 					if (there[0]> here[0]) var xinc = -1;
+ 					else var xinc = 1;
+ 					
+ 					var x = there[0] + xinc;
+ 					var y = there[1] + yinc;
+
+ 					while (x!= here[0] && y != here[1]) 
+ 						{
+ 							console.log('checking (%o,%o)', x, y);
+ 							if(Game.getPieceAt( [x, y]) != null)
+ 								return false;
+ 								
+ 								x+=xinc; y+=yinc;
+ 						}
+ 					return true;
+ 				
+ 				
+ 				
+ 				
+ 				break;
+
+ 			}
+ 			case("queen"):{
+ 				
+ 				//rook-like movement
+ 				if(here[0]==there[0])
+ 				{	if (there[1]> here[1]) var inc = -1;
+ 					else var inc = 1;
+ 					
+ 					for(var y = there[1] + inc; y != here[1]; y += inc) 
+ 						{
+ 							if(Game.getPieceAt( [here[0], y]) != null)
+ 								return false;
+ 						}
+ 					return true;
+ 				}
+ 				
+ 				if(here[1]==there[1])
+ 				{	if (there[0] > here[0]) var inc = -1;
+ 					else var inc = 1;
+ 					
+ 					for(var x = there[0] + inc; x != here[0]; x += inc) 
+ 						{
+ 							if(Game.getPieceAt( [x, here[1] ]) != null)
+ 								return false;
+ 						}
+ 					return true;
+ 				}
+ 				//bishop-like movement
+ 				 if(!(Math.abs(here[0]-there[0]) == Math.abs(here[1]-there[1])))
+ 					return false;
+ 					
+ 					if (there[1]> here[1]) var yinc = -1;
+ 					else var yinc = 1;
+ 					
+ 					if (there[0]> here[0]) var xinc = -1;
+ 					else var xinc = 1;
+ 					
+ 					var x = there[0] + xinc;
+ 					var y = there[1] + yinc;
+ 					while (x!= here[0] && y != here[1]) 
+ 						{
+ 							console.log('checking (%o,%o)', x, y);
+ 							if(Game.getPieceAt( [x, y]) != null)
+ 								return false;
+ 								
+ 								x+=xinc; y+=yinc;
+ 						}
+ 						
+ 						return true;
+ 				break;
+ 			}
+ 			case("king"):{
+ 				if(Math.abs(here[0] - there[0]) <= 1 && Math.abs(here[1] - there[1]) <= 1)
+ 					return true;
+ 				return false;
+ 				break;
+ 			}
+ 			case("pawn"):{
+
+ 				if(color == 0)
+ 					var forward = 1;
+ 				else
+ 					var forward = -1
+ 					
+ 						if(    there[0]==here[0] 
+ 							&& there[1] == here[1] + forward
+ 							&& Game.getPieceAt(there) == null)
+ 							return true;
+ 							
+ 						if(    (there[0]==here[0]+1 || there[0]==here[0]-1) 
+ 						    && there[1] == here[1] + forward 
+ 						    && Game.getPieceAt(there) != null)
+ 						    return true;
+ 						
+ 						if(    there[0]==here[0] 
+ 							&& there[1] == here[1] + forward + forward
+ 							&& Game.getPieceAt( [ here[0], here[1]+forward ] ) == null
+ 							&& here[1] == 3.5 - (2.5 * forward) )
+ 							return true;
+ 					
+ 					return false;
+ 			break;
+ 			}
+ 		}
+ 		}
+
+
+	//DOES NOT CHECK VALIDITY OF MOVE. You should call validateMove before calling move 
+
 function clone(obj) {
 	if (null == obj || "object" != typeof obj) return obj;
 	var copy = obj.constructor();
@@ -151,9 +318,13 @@ var Game = {
 	},
 
 	placePiece: function (event) {
-		var cancelMove = false;
+		var cancelMove = false;		
 		var pos = Game.getPosition(event);
 		var grid = Game.getGrid(pos);
+		
+		cancelMove = !(validateMove(Game.previous.piece.type, Game.previous.grid, grid, Game.previous.piece.color))
+		if (cancelMove)
+			return;
 		console.log("placePiece: %o", grid);
 
 		// check if there's a piece here
@@ -178,6 +349,7 @@ var Game = {
 
 		//TODO: check if the move is valid according to game rules
 		if (!cancelMove) {
+			
 		}
 
 		// snap the piece to the grid
