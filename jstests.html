@@ -1,0 +1,34 @@
+<html>
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+	<title>JSUnit tests for our main functions</title>
+    <script language="javascript" src="jsunit/app/jsUnitCore.js"></script>
+	<script language="javascript" src="chess.js"></script>
+</head>
+
+<body>
+	<div id="test">
+		
+	</div>
+<script type="text/javascript">
+	function setUp() {
+		//setup before a test case
+	}
+	function tearDown() {
+		//cleanup after a test case
+	}
+	function testBoard() {
+		var canv = document.createElement('canvas');
+		canv.setAttribute('id','canvas');
+		document.getElementById('test').appendChild(canv);
+		Game.initialize();
+		assertNotNull("game object",Game);
+		assertNotNull("canvas object",Game.canvas);
+		assertNotNull("2d canvas context",Game.canvas.getContext('2d'));
+		
+	}
+</script>
+</body>
+</html>
