@@ -3,7 +3,8 @@ var Network = {
 	//TODO Change as necessary
 	server: 'http://127.0.0.1:8000',
 	ID: null,
-	offline: false,
+	offline: true,
+	interval: null,
 
 	send: function (data, cb_success, cb_error) {
 		$.ajax({
@@ -18,22 +19,50 @@ var Network = {
 	},
 
 	initialize: function () {
+		$('#online').html('connecting...');
 		Network.send({
 				command: 'newUser'
 			},
 			function (data) {
-				console.log(data);
 				Network.ID = JSON.parse(data);
+				console.log('user ID: ' + Network.ID);
+				Network.offline = false;
+				$('#online').html('waiting for another user...');
+				Network.interval = setInterval(Network.userWait, 1000);
 			},
 			function (jqXHR, textStatus, errorThrown) {
 				console.log(textStatus + ' ' + errorThrown);
-				console.log('unable to assign network ID, switching to offline mode');
 				Network.offline = true;
+				$('#online').html('failed to contact server');
+			}
+		);
+	},
+
+	// wait for the server to pair us up with another user
+	userWait: function () {
+		Network.send({
+				command: 'pairUser',
+				ID: Network.ID
+			},
+			function (data) {
+				id = JSON.parse(data);
+				if (id != null) {
+					console.log('partner ID: ' + id);
+					clearInterval(Network.interval);
+					$('#online').html('paired!');
+					//TODO: clear game state, see who goes first, go into getState() loop
+				}
+			},
+			function (jqXHR, textStatus, errorThrown) {
+				console.log(textStatus + ' ' + errorThrown);
+				clearInterval(Network.interval);
+				Network.offline = true;
+				$('#online').html('connection lost');
 			}
 		);
 	}
 
 }
 
-Network.initialize()
+//Network.initialize()
 
