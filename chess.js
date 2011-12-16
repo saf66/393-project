@@ -194,11 +194,14 @@ var Game = {
 	movePiece: function (event) {
 		var pos = Game.getPosition(event);
 		var piece = Game.previous.piece;
+		if (piece == null)
+			return false;
 		//TODO: it's really inefficient to redraw the entire game board every time the mouse moves
 		//TODO: look into ctx.save() and ctx.restore()
 		Game.draw();
 		// draw piece at these coordinates
 		Game.drawPiece(piece.type, piece.color, pos);
+		return true;
 	},
 
 	//given a piece and a target tuple, can that piece go there?

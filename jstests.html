@@ -246,6 +246,28 @@
 				Game.setPieceAt([x, y], piece);
 			}
 	}
+	function testMovePiece() {
+		Game.state = [];
+		Game.color = 1;
+		Game.canvas = document.getElementById('canvas');
+		Game.initialize();
+		var event = {
+			offsetX: 0 * 50 + 25,
+			offsetY: 7 * 50 + 25
+		};
+		assert(Game.choosePiece(event));
+		$(Game.canvas).unbind('click', Game.choosePiece);
+		$(Game.canvas).unbind('mousemove', Game.movePiece);
+		$(Game.canvas).unbind('click', Game.placePiece);
+		for (var y = 0; y < 8; y++)
+			for (var x = 0; x < 8; x++) {
+				event = {
+					offsetX: x * 50 + 25,
+					offsetY: y * 50 + 25
+				};
+				assert(Game.movePiece(event));
+			}
+	}
 </script>
 </body>
 </html>
