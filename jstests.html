@@ -5,51 +5,79 @@
 
 	<title>JSUnit tests for our main functions</title>
     <script language="javascript" src="jsunit/app/jsUnitCore.js"></script>
-	<script language="javascript" src="chess.js"></script>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+	<script type="text/javascript" src="network.js"></script>
+	<script type="text/javascript" src="ai.js"></script>
+	<script type="text/javascript" src="chess.js"></script>
 </head>
 
 <body>
-	<div id="test">
-		
-	</div>
+<canvas id="canvas" width="400" height="400">Canvas unsupported.</canvas>
 <script type="text/javascript">
 	var here;
 	function setUp() {
 		//always start pieces at 3,3
 		here = [3,3];
+		// clear the game state
+		for (var i = 0; i < 8; i++) {
+			Game.state[i] = [];
+			for (var j = 0; j < 8; j++) {
+				Game.state[i][j] = null;
+			}
+		}
+		// get canvas
+		Game.canvas = document.getElementById('canvas');
 	}
 	function testBoard() {
 		assertNotNull("game object",Game);
 	}
+	function testPieces() {
+		assertNotNull("pieces array",Game.pieces);
+	}
 	function testMoves() {
 		var there = here;
-		assert(validateMove("",here,there,null));
+		assert(Game.validateMove("",here,there,null));
 	}
 	function testKingMoves(){
 		var there = [3,4];
-		assert(validateMove("king",here,there,1));
+		assert(Game.validateMove("king",here,there,1));
 	}
 	function testRookMoves(){
 		var there = [3,4];
-		assert(validateMove("rook",here,there,1));
+		assert(Game.validateMove("rook",here,there,1));
 	}
 	function testBishopMoves(){
 		var there = [4,4];
-		assert(validateMove("bishop",here,there,1));
+		assert(Game.validateMove("bishop",here,there,1));
 	}
 	function testQueenMoves(){
 		var there = [4,4];
-		assert(validateMove("queen",here,there,1));
+		assert(Game.validateMove("queen",here,there,1));
 	}
 	function testKnightMoves(){
 		var there = [4,5];
-		assert(validateMove("knight",here,there,1));
+		assert(Game.validateMove("knight",here,there,1));
 	}
 	function testPawnMoves(){
-		var there = [3,4];
-		assert(validateMove("pawn",here,there,1));
+		var there = [3,2];
+		assert(Game.validateMove("pawn",here,there,1));
 	}
-	function testCaptures(){
+	function testGameInitialize(){
+		Game.initialize();
+		var a = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook']
+		for (var i = 0; i < a.length; i++) {
+			assertNotNull(Game.state[i][0]);
+			assert(Game.state[i][0].type == a[i] && Game.state[i][0].color == 0);
+			assertNotNull(Game.state[i][7]);
+			assert(Game.state[i][7].type == a[i] && Game.state[i][7].color == 1);
+		}
+		for (var i = 0; i < 8; i++) {
+			assertNotNull(Game.state[i][1]);
+			assert(Game.state[i][1].type == 'pawn' && Game.state[i][1].color == 0);
+			assertNotNull(Game.state[i][6]);
+			assert(Game.state[i][6].type == 'pawn' && Game.state[i][6].color == 1);
+		}
 	}
 </script>
 </body>
