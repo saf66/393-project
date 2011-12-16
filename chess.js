@@ -327,6 +327,8 @@ var Game = {
 				break;
 			}
 		}
+
+		return false;
 	},
 
 	placePiece: function (event) {

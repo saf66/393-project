@@ -16,9 +16,7 @@
 <canvas id="canvas" width="400" height="400">Canvas unsupported.</canvas>
 <script type="text/javascript">
 	var here;
-	function setUp() {
-		//always start pieces at 3,3
-		here = [3,3];
+	function clearBoard() {
 		// clear the game state
 		for (var i = 0; i < 8; i++) {
 			Game.state[i] = [];
@@ -26,6 +24,11 @@
 				Game.state[i][j] = null;
 			}
 		}
+	}
+	function setUp() {
+		//always start pieces at 3,3
+		here = [3,3];
+		clearBoard();
 		// get canvas
 		Game.canvas = document.getElementById('canvas');
 	}
@@ -36,32 +39,124 @@
 		assertNotNull("pieces array",Game.pieces);
 	}
 	function testMoves() {
-		var there = here;
-		assert(Game.validateMove("",here,there,null));
+		var a = [
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0]
+		];
+		for (var y = 0; x < 8; x++)
+			for (var x = 0; y < 8; y++)
+				assert(Game.validateMove("", here, [x, y], null) == (a[x][y] == 1));
 	}
-	function testKingMoves(){
-		var there = [3,4];
-		assert(Game.validateMove("king",here,there,1));
+	function testKingMoves() {
+		var a = [
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 1, 1, 1, 0, 0, 0],
+			[0, 0, 1, 1, 1, 0, 0, 0],
+			[0, 0, 1, 1, 1, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0]
+		];
+		for (var y = 0; x < 8; x++)
+			for (var x = 0; y < 8; y++)
+				assert(Game.validateMove("king", here, [x, y], 1) == (a[x][y] == 1));
 	}
-	function testRookMoves(){
-		var there = [3,4];
-		assert(Game.validateMove("rook",here,there,1));
+	function testRookMoves() {
+		var a = [
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0]
+		];
+		for (var y = 0; x < 8; x++)
+			for (var x = 0; y < 8; y++)
+				assert(Game.validateMove("rook", here, [x, y], 1) == (a[x][y] == 1));
 	}
-	function testBishopMoves(){
-		var there = [4,4];
-		assert(Game.validateMove("bishop",here,there,1));
+	function testBishopMoves() {
+		var a = [
+			[1, 0, 0, 0, 0, 0, 1, 0],
+			[0, 1, 0, 0, 0, 1, 0, 0],
+			[0, 0, 1, 0, 1, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 1, 0, 1, 0, 0, 0],
+			[0, 1, 0, 0, 0, 1, 0, 0],
+			[1, 0, 0, 0, 0, 0, 1, 0],
+			[0, 0, 0, 0, 0, 0, 0, 1]
+		];
+		for (var y = 0; x < 8; x++)
+			for (var x = 0; y < 8; y++)
+				assert(Game.validateMove("bishop", here, [x, y], 1) == (a[x][y] == 1));
 	}
-	function testQueenMoves(){
-		var there = [4,4];
-		assert(Game.validateMove("queen",here,there,1));
+	function testQueenMoves() {
+		var a = [
+			[1, 0, 0, 1, 0, 0, 1, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[0, 0, 1, 1, 1, 0, 0, 0],
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[0, 0, 1, 1, 1, 0, 0, 0],
+			[0, 1, 0, 1, 0, 1, 0, 0],
+			[1, 0, 0, 1, 0, 0, 1, 0],
+			[0, 0, 0, 1, 0, 0, 0, 1]
+		];
+		for (var y = 0; x < 8; x++)
+			for (var x = 0; y < 8; y++)
+				assert(Game.validateMove("queen", here, [x, y], 1) == (a[x][y] == 1));
 	}
-	function testKnightMoves(){
-		var there = [4,5];
-		assert(Game.validateMove("knight",here,there,1));
+	function testKnightMoves() {
+		var a = [
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 1, 0, 1, 0, 0, 0],
+			[0, 1, 0, 0, 0, 1, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 1, 0, 0, 0, 1, 0, 0],
+			[0, 0, 1, 0, 1, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0]
+		];
+		for (var y = 0; x < 8; x++)
+			for (var x = 0; y < 8; y++)
+				assert(Game.validateMove("knight", here, [x, y], 1) == (a[x][y] == 1));
 	}
-	function testPawnMoves(){
-		var there = [3,2];
-		assert(Game.validateMove("pawn",here,there,1));
+	function testWhitePawnMoves() {
+		var a = [
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0]
+		];
+		for (var y = 0; x < 8; x++)
+			for (var x = 0; y < 8; y++)
+				assert(Game.validateMove("pawn", here, [x, y], 1) == (a[x][y] == 1));
+	}
+	function testBlackPawnMoves() {
+		var a = [
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0]
+		];
+		for (var y = 0; x < 8; x++)
+			for (var x = 0; y < 8; y++)
+				assert(Game.validateMove("pawn", here, [x, y], 0) == (a[x][y] == 1));
 	}
 	function testGameInitialize(){
 		Game.initialize();
