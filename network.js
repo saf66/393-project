@@ -34,7 +34,7 @@ var Network = {
 			function (jqXHR, textStatus, errorThrown) {
 				console.log(textStatus + ' ' + errorThrown);
 				Network.offline = true;
-				$('#online').html('failed to contact server');
+				$('#online').html('Failed to contact server! <a href="javascript:Network.initialize()">Try again?</a>');
 			}
 		);
 	},

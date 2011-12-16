@@ -432,7 +432,10 @@ var Game = {
 				// send the game state to the server
 				Network.sendState();
 			Game.checkForCheck();
-			if ((Game.blackCheck || Game.redCheck) && Game.checkForCheckmate()) Game.finish();
+			if ((Game.blackCheck || Game.redCheck) && Game.checkForCheckmate()) {
+				$(Game.canvas).unbind('click', Game.choosePiece);
+				Game.finish();
+			}
 		}
 	},
 

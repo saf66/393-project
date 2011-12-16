@@ -70,7 +70,6 @@ var functions = {
 	},
 
 	endGame: function (data) {
-		console.log('endgame');
 		games[data.game].over += 1;
 		return null;
 	}
