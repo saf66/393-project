@@ -16,7 +16,9 @@
 <canvas id="canvas" width="400" height="400">Canvas unsupported.</canvas>
 <script type="text/javascript">
 	var here;
-	function clearBoard() {
+	function setUp() {
+		//always start pieces at 3,3
+		here = [3,3];
 		// clear the game state
 		for (var i = 0; i < 8; i++) {
 			Game.state[i] = [];
@@ -24,11 +26,6 @@
 				Game.state[i][j] = null;
 			}
 		}
-	}
-	function setUp() {
-		//always start pieces at 3,3
-		here = [3,3];
-		clearBoard();
 		// get canvas
 		Game.canvas = document.getElementById('canvas');
 	}
@@ -168,7 +165,10 @@
 			for (var x = 0; y < 8; y++)
 				assert(Game.validateMove("pawn", here, [x, y], 0) == (a[x][y] == 1));
 	}
-	function testGameInitialize(){
+	function testGameInitialize() {
+		Game.state = [];
+		Game.color = 1;
+		Game.canvas = document.getElementById('canvas');
 		Game.initialize();
 		var a = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook']
 		for (var i = 0; i < a.length; i++) {
