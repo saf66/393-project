@@ -1,3 +1,5 @@
+var port = 8000;
+
 var http = require('http');
 var users = {};
 var games = {};
@@ -96,5 +98,5 @@ http.createServer(function (req, res) {
 	res.end("_cb('" + JSON.stringify(data) + "')");
 
 //TODO: remove the '127.0.0.1' parameter for production
-}).listen(8000, '127.0.0.1');
+}).listen(port);
 
