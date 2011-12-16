@@ -82,6 +82,12 @@ canvas {
 	display: none;
 }
 
+#online, #self, #turn {
+	padding-left: 40px;
+	font-family: Arial, Helvetica, sans-serif;
+	text-shadow: 0px 2px 1px #bbbaba;
+}
+
 #letterpress {
 	text-align: center;
 	padding-top: 1px;

@@ -383,26 +383,26 @@ var Game = {
 			if (!(initialBlackCheck) && Game.blackCheck && Game.turn == 0) {
 				Game.blackCheck = initialBlackCheck;
 				Game.redCheck = initialRedCheck;
-				console.log("Can't put yourself in check!")
+				console.log("Can't put yourself in check!");
 				return;
 			}
 			if (initialBlackCheck && Game.blackCheck && Game.turn == 0) {
 				Game.blackCheck = initialBlackCheck;
 				Game.redCheck = initialRedCheck;
-				console.log("Still in check!")
+				console.log("Still in check!");
 				return;
 			}
 
 			if (!(initialRedCheck) && Game.redCheck && Game.turn == 1) {
 				Game.blackCheck = initialBlackCheck;
 				Game.redCheck = initialRedCheck;
-				console.log("Can't put yourself in check!")
+				console.log("Can't put yourself in check!");
 				return;
 			}
 			if (initialRedCheck && Game.redCheck && Game.turn == 1) {
 				Game.blackCheck = initialBlackCheck;
 				Game.redCheck = initialRedCheck;
-				console.log("Still in check!")
+				console.log("Still in check!");
 				return;
 			}
 		} else {
@@ -435,6 +435,19 @@ var Game = {
 			if ((Game.blackCheck || Game.redCheck) && Game.checkForCheckmate()) {
 				$(Game.canvas).unbind('click', Game.choosePiece);
 				Game.finish();
+			}
+			if (Game.color == 0) {
+				if (Game.blackCheck) {
+					$('#self').html('You are: ' + Game.colorString(Game.color) + ' (IN CHECK)');
+				} else {
+					$('#self').html('You are: ' + Game.colorString(Game.color));
+				}
+			} else {
+				if (Game.redCheck) {
+					$('#self').html('You are: ' + Game.colorString(Game.color) + ' (IN CHECK)');
+				} else {
+					$('#self').html('You are: ' + Game.colorString(Game.color));
+				}
 			}
 		}
 	},
