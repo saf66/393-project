@@ -46,6 +46,7 @@ var Game = {
 	state: [],
 	allPieces: [],
 	turn: 1,
+	color: Math.random() > 0.5 ? 0 : 1,
 	redKing: null,
 	blackKing: null,
 	redCheck: false,
@@ -109,9 +110,27 @@ var Game = {
 			// draw current state
 			Game.draw();
 
+			// inform user
+			$('#self').html('You are: ' + Game.colorString(Game.color));
+			$('#turn').html('Current turn: ' + Game.colorString(Game.turn));
+
 			// add click event listener to the canvas
 			$(Game.canvas).bind('click', Game.choosePiece);
+
+			// who gets to move?
+			if (Network.offline) {
+				if (Game.turn != Game.color)
+					AI.move();
+			} else {
+				if (Game.turn != Game.color)
+					Network.interval = setInterval(Network.waitMove, 1000);
+			}
 		}
+	},
+
+	// convert an integer color to a string color
+	colorString: function (color) {
+		return color == 0 ? 'black' : 'white';
 	},
 
 	// pick up a game piece with the mouse
@@ -128,8 +147,12 @@ var Game = {
 		console.log('piece detected: %o %o', piece.type, piece.color);
 
 		// check if current player is allowed to select that piece
-		if (piece.color != Game.turn) {
+		if (Game.color != piece.color) {
 			console.log('tried to select opponent piece');
+			return;
+		}
+		if (!Network.offline && Game.turn != Game.color) {
+			console.log('tried to select piece out of turn');
 			return;
 		}
 
@@ -406,6 +429,12 @@ var Game = {
 			Game.turn++;
 			Game.turn = Game.turn % 2;
 			console.log('turn: %o', Game.turn);
+			if (Network.offline)
+				// AI's turn to move
+				AI.move();
+			else
+				// send the game state to the server
+				Network.sendState();
 		}
 	},
 
