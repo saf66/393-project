@@ -173,15 +173,15 @@
 		var a = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook']
 		for (var i = 0; i < a.length; i++) {
 			assertNotNull(Game.state[i][0]);
-			assert(Game.state[i][0].type == a[i] && Game.state[i][0].color == 0);
+			assert(Game.getPieceAt([0, i]).type == a[i] && Game.getPieceAt([0, i]).color == 0);
 			assertNotNull(Game.state[i][7]);
-			assert(Game.state[i][7].type == a[i] && Game.state[i][7].color == 1);
+			assert(Game.getPieceAt([7, i]).type == a[i] && Game.getPieceAt([7, i]).color == 1);
 		}
 		for (var i = 0; i < 8; i++) {
 			assertNotNull(Game.state[i][1]);
-			assert(Game.state[i][1].type == 'pawn' && Game.state[i][1].color == 0);
+			assert(Game.getPieceAt([1, i]).type == 'pawn' && Game.getPieceAt([1, i]).color == 0);
 			assertNotNull(Game.state[i][6]);
-			assert(Game.state[i][6].type == 'pawn' && Game.state[i][6].color == 1);
+			assert(Game.getPieceAt([6, i]).type == 'pawn' && Game.getPieceAt([6, i]).color == 1);
 		}
 	}
 	function testColorString() {
