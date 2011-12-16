@@ -492,57 +492,54 @@ var Game = {
 		{
 			var x = Game.state[i][j];
 			if(!(x == null)) 
-				array.push( [x, [i,j] ]  )
+				array.push( [x, [i,j] ]  );
 		}
 		return array;
 	},
 	
-	checkForCheck: function ()
-	{
+	checkForCheck: function () {
 		var allPieces = Game.getAllPieces();
 		var redKingGrid;
 		var blackKingGrid;
 		Game.blackCheck = false;
 		Game.redCheck = false;
-		
-		for(var i =0; i< allPieces.length; i++) 
-			{
 
-			if(allPieces[i][0] == Game.blackKing) 
+		for (var i = 0; i < allPieces.length; i++) {
+			if (allPieces[i][0].type == Game.blackKing.type && allPieces[i][0].color == Game.blackKing.color) {
 				blackKingGrid = allPieces[i][1];
-			if(allPieces[i][0] == Game.redKing) 
-				redKingGrid = allPieces[i][1];
+				break;
 			}
-		
-		for(var i=0; i<allPieces.length; i++)
-		{
-			var checkPiece = allPieces[i][0]; 
-			if (checkPiece == Game.blackKing) continue;
+		}
+
+		for (var i = 0; i < allPieces.length; i++) {
+			if (allPieces[i][0].type == Game.redKing.type && allPieces[i][0].color == Game.redKing.color) {
+				redKingGrid = allPieces[i][1];
+				break;
+			}
+		}
+
+		for (var i = 0; i < allPieces.length; i++) {
+			var checkPiece = allPieces[i][0];
+			if (checkPiece.type == Game.blackKing.type && checkPiece.color == Game.blackKing.color) continue;
 			if (checkPiece.color == 0) continue;
-			if (Game.validateMove(checkPiece.type, allPieces[i][1], blackKingGrid, checkPiece.color))
-				{
+			if (Game.validateMove(checkPiece.type, allPieces[i][1], blackKingGrid, checkPiece.color)) {
 				Game.blackCheck = true;
 				break;
-				}
-		}
-		
-		for(var i=0; i<allPieces.length; i++)
-		{
-			var checkPiece = allPieces[i][0]; 
-			if (checkPiece == Game.redKing) continue;
-			if (checkPiece.color == 1) continue;
-			if (Game.validateMove(checkPiece.type, allPieces[i][1], redKingGrid, checkPiece.color))
-				{
-				Game.redCheck = true;
-				break;
-				}
+			}
 		}
 
-		
+		for (var i = 0; i < allPieces.length; i++) {
+			var checkPiece = allPieces[i][0];
+			if (checkPiece.r == Game.redKing.type && checkPiece.color == Game.redKing.color) continue;
+			if (checkPiece.color == 1) continue;
+			if (Game.validateMove(checkPiece.type, allPieces[i][1], redKingGrid, checkPiece.color)) {
+				Game.redCheck = true;
+				break;
+			}
+		}
 	},
 	
-	checkForCheckmate: function()
-	{
+	checkForCheckmate: function () {
 		console.log("checking for checkmate...")
 		var allPieces = Game.getAllPieces();
 		var redKingGrid;
@@ -550,68 +547,63 @@ var Game = {
 		var colorInCheck;
 		var initialBlackCheck = Game.blackCheck
 		var initialRedCheck = Game.redCheck
-		
-		if(Game.blackCheck) colorInCheck = 0;
-		else colorInCheck = 1;
-		
-		for(var i =0; i< allPieces.length; i++) 
-			{
 
-			if(allPieces[i][0] == Game.blackKing) 
+		if (Game.blackCheck) colorInCheck = 0;
+		else colorInCheck = 1;
+
+		for (var i = 0; i < allPieces.length; i++) {
+			if (allPieces[i][0].type == Game.blackKing.type && allPieces[i][0].color == Game.blackKing.color) {
 				blackKingGrid = allPieces[i][1];
-			if(allPieces[i][0] == Game.redKing) 
-				redKingGrid = allPieces[i][1];
+				break;
 			}
-		
-		for(var i =0; i< allPieces.length; i++) 
-			{
-				var piece = allPieces[i][0]
-				var where = allPieces[i][1]
-				
-				if (colorInCheck != piece.color) continue;
-				console.log(piece.type + " at " + where)
-				for(var x = 0; x < 8; x++)
-				{
-					for(var y = 0; y<8; y++)
-					{
-					
-						if(Game.validateMove(piece.type, where, [x,y], piece.color))
-						{
-							if([x,y]!=redKingGrid && [x,y] != blackKingGrid) 
-							{
-							
-						    console.log("can go to " + [x,y])
-						
-							var wasThere = Game.getPieceAt([x,y]);
-							
+		}
+
+		for (var i = 0; i < allPieces.length; i++) {
+			if (allPieces[i][0].type == Game.redKing.type && allPieces[i][0].color == Game.redKing.color) {
+				redKingGrid = allPieces[i][1];
+				break;
+			}
+		}
+
+		for (var i = 0; i < allPieces.length; i++) {
+			var piece = allPieces[i][0]
+			var where = allPieces[i][1]
+
+			if (colorInCheck != piece.color) continue;
+			console.log(piece.type + " at " + where)
+			for (var x = 0; x < 8; x++) {
+				for (var y = 0; y < 8; y++) {
+
+					if (Game.validateMove(piece.type, where, [x, y], piece.color)) {
+						if ([x, y] != redKingGrid && [x, y] != blackKingGrid) {
+
+							console.log("can go to " + [x, y])
+
+							var wasThere = Game.getPieceAt([x, y]);
+
 							Game.setPieceAt(where, null)
-							Game.setPieceAt([x,y], piece);
-							
+							Game.setPieceAt([x, y], piece);
+
 							Game.blackCheck = initialBlackCheck;
 							Game.redCheck = initialRedCheck;
 							Game.checkForCheck();
 							console.log("Then black check would be %o and red check would be %o", Game.blackCheck, Game.redCheck)
-							
-							Game.setPieceAt([x,y], wasThere);
+
+							Game.setPieceAt([x, y], wasThere);
 							Game.setPieceAt(where, piece);
-							
-							if ((Game.blackCheck == false && colorInCheck == 0) || (Game.redCheck == false && colorInCheck == 1)) 
-							{
+
+							if ((Game.blackCheck == false && colorInCheck == 0) || (Game.redCheck == false && colorInCheck == 1)) {
 								Game.blackCheck = initialBlackCheck;
 								Game.redCheck = initialRedCheck;
 								return false;
 							}
 						}
 					}
-					
-					}
-					
 				}
-			
 			}
-			return true;
+		}
+		return true;
 	},
-	
 	
 	// draw a game piece at a specified position (in pixels)
 	drawPiece: function (type, color, pos) {
