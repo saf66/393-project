@@ -36,24 +36,30 @@ var AI = {
 								case ('bishop'): score += 5;
 								case ('rook'): score += 5;
 								case ('queen'): score += 8;
-								case ('king'): score += 100;
+								case ('king'): {
+									if (Game.checkForCheckmate()) {
+										Game.finish();
+										return;
+									}
+								}
 							}
 						}
 						Game.setPieceAt(source, null);
 						Game.setPieceAt(target, piece);
 						Game.checkForCheck();
+						var check = [Game.blackCheck, Game.redCheck];
+						var checkmate = Game.checkForCheckmate();
 						Game.setPieceAt(source, piece);
 						Game.setPieceAt(target, opponent);
-						if (color == 0) {
-							if (Game.blackCheck)
-								score -= 50;
-							if (Game.redCheck)
-								score += 10;
-						} else {
-							if (Game.redCheck)
-								score -= 50;
-							if (Game.blackCheck)
-								score += 10;
+						if (check[color]) {
+							score -= 100;
+							if (checkmate)
+								score -= 100;
+						}
+						if (check[(color + 1) % 2]) {
+							score += 100;
+							if (checkmate)
+								score += 100;
 						}
 						moves.push([score, source, target]);
 					}
@@ -70,6 +76,10 @@ var AI = {
 			if (moves[i][0] == max)
 				total.push(moves[i]);
 		max = shuffle(total)[0];
+		if (max == undefined) {
+			Game.finish();
+			return;
+		}
 		var piece = Game.getPieceAt(max[1]);
 		Game.setPieceAt(max[1], null);
 		Game.setPieceAt(max[2], piece);
