@@ -48,7 +48,8 @@ var functions = {
 		games[game] = {
 			players: [data.ID, id],
 			turn: 1,
-			state: []
+			state: [],
+			over: 0
 		};
 		users[id].game = game;
 		users[data.ID].game = game;
@@ -60,12 +61,32 @@ var functions = {
 	},
 
 	setGame: function (data) {
-		console.log('setting game state for: ' + data.game);
-		games[data.game].state = data.state;
-		games[data.game].turn = data.turn;
+		if (games[data.game] != undefined || games[data.game] != null) {
+			console.log('setting game state for: ' + data.game);
+			games[data.game].state = data.state;
+			games[data.game].turn = data.turn;
+		}
+		return null;
+	},
+
+	endGame: function (data) {
+		console.log('endgame');
+		games[data.game].over += 1;
 		return null;
 	}
 }
+
+// garbage collection
+setInterval(function () {
+	for (var id in games)
+		if (games[id].over == 2)
+			setTimeout(function () {
+				console.log('GC: ' + id);
+				delete users[games[id].players[0]];
+				delete users[games[id].players[1]];
+				delete games[id];
+			}, 10 * 1000);
+}, 20 * 1000);
 
 http.createServer(function (req, res) {
 

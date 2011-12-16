@@ -128,6 +128,14 @@ var Game = {
 		}
 	},
 
+	// checkmate detected, game over
+	finish: function () {
+		console.log('game over');
+		$('#turn').html('Checkmate, ' + Game.colorString((Game.turn + 1) % 2) + ' wins!');
+		if (!Network.offline)
+			Network.finish();
+	},
+
 	// convert an integer color to a string color
 	colorString: function (color) {
 		return color == 0 ? 'black' : 'white';
@@ -322,20 +330,19 @@ var Game = {
 	},
 
 	placePiece: function (event) {
-		var cancelMove = false;		
+		var cancelMove = false;
 		var pos = Game.getPosition(event);
 		var grid = Game.getGrid(pos);
-		
-		var initialBlackCheck = Game.blackCheck
-		var initialRedCheck = Game.redCheck
+
+		var initialBlackCheck = Game.blackCheck;
+		var initialRedCheck = Game.redCheck;
 		Game.blackCheck = false;
 		Game.redCheck = false;
-		
+
 		cancelMove = !(Game.validateMove(Game.previous.piece.type, Game.previous.grid, grid, Game.previous.piece.color))
-		
-		if (cancelMove)
-			return;
-			
+
+		if (cancelMove) return;
+
 		console.log("placePiece: %o", grid);
 
 		// check if there's a piece here
@@ -359,61 +366,50 @@ var Game = {
 		}
 
 		// check if the move is valid according to game rules
-		
 		var wasThere = Game.getPieceAt(grid);
 		Game.setPieceAt(grid, Game.previous.piece); // place piece temporarily
-				
 		Game.checkForCheck();
-		
-		 //undo temporary placement of piece
-		
-		console.log("Black Check is %o. Red Check is %o", Game.blackCheck, Game.redCheck)
-		
-		if((Game.blackCheck || Game.redCheck) &&  Game.checkForCheckmate()) 
-			console.log("Checkmate has been detected.")
-		
-		Game.setPieceAt(grid, wasThere);	
-		
-		if (!cancelMove)
-		{
-			
-		if(!(initialBlackCheck) && Game.blackCheck && Game.turn == 0)
-			{
-				Game.blackCheck = initialBlackCheck;
-				Game.redCheck = initialRedCheck;
-				console.log("Can't put yourself in check!")
-				return;
-			}
-		if(initialBlackCheck && Game.blackCheck && Game.turn == 0)
-			{
-				Game.blackCheck = initialBlackCheck;
-				Game.redCheck = initialRedCheck;
-				console.log("Still in check!")
-				return;
-			}
-			
-		if(!(initialRedCheck) && Game.redCheck && Game.turn == 1)
-			{
-				Game.blackCheck = initialBlackCheck;
-				Game.redCheck = initialRedCheck;
-				console.log("Can't put yourself in check!")
-				return;
-			}
-		if(initialRedCheck && Game.redCheck && Game.turn == 1)
-			{
-				Game.blackCheck = initialBlackCheck;
-				Game.redCheck = initialRedCheck;
-				console.log("Still in check!")
-				return;
-			}
-		}
-		else
-			{
-				Game.blackCheck = initialBlackCheck;
-				Game.redCheck = initialRedCheck;
-			}
-		// snap the piece to the grid
 
+		//undo temporary placement of piece
+		console.log("Black Check is %o. Red Check is %o", Game.blackCheck, Game.redCheck)
+
+		if ((Game.blackCheck || Game.redCheck) && Game.checkForCheckmate())
+			console.log("Checkmate has been detected.");
+
+		Game.setPieceAt(grid, wasThere);
+
+		if (!cancelMove) {
+
+			if (!(initialBlackCheck) && Game.blackCheck && Game.turn == 0) {
+				Game.blackCheck = initialBlackCheck;
+				Game.redCheck = initialRedCheck;
+				console.log("Can't put yourself in check!")
+				return;
+			}
+			if (initialBlackCheck && Game.blackCheck && Game.turn == 0) {
+				Game.blackCheck = initialBlackCheck;
+				Game.redCheck = initialRedCheck;
+				console.log("Still in check!")
+				return;
+			}
+
+			if (!(initialRedCheck) && Game.redCheck && Game.turn == 1) {
+				Game.blackCheck = initialBlackCheck;
+				Game.redCheck = initialRedCheck;
+				console.log("Can't put yourself in check!")
+				return;
+			}
+			if (initialRedCheck && Game.redCheck && Game.turn == 1) {
+				Game.blackCheck = initialBlackCheck;
+				Game.redCheck = initialRedCheck;
+				console.log("Still in check!")
+				return;
+			}
+		} else {
+			Game.blackCheck = initialBlackCheck;
+			Game.redCheck = initialRedCheck;
+		}
+		// snap the piece to the grid
 		Game.setPieceAt(grid, Game.previous.piece);
 		Game.draw();
 
@@ -435,6 +431,8 @@ var Game = {
 			else
 				// send the game state to the server
 				Network.sendState();
+			Game.checkForCheck();
+			if ((Game.blackCheck || Game.redCheck) && Game.checkForCheckmate()) Game.finish();
 		}
 	},
 
@@ -538,7 +536,7 @@ var Game = {
 			}
 		}
 	},
-	
+
 	checkForCheckmate: function () {
 		console.log("checking for checkmate...")
 		var allPieces = Game.getAllPieces();

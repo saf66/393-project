@@ -39,6 +39,14 @@ var Network = {
 		);
 	},
 
+	// generic error when contacting server
+	error: function (jqXHR, textStatus, errorThrown) {
+		console.log(textStatus + ' ' + errorThrown);
+		clearInterval(Network.interval);
+		Network.offline = true;
+		$('#online').html('connection lost');
+	},
+
 	// wait for the server to pair us up with another user
 	pairUser: function () {
 		clearInterval(Network.interval);
@@ -66,12 +74,7 @@ var Network = {
 					Network.interval = setInterval(Network.pairUser, 1000);
 				}
 			},
-			function (jqXHR, textStatus, errorThrown) {
-				console.log(textStatus + ' ' + errorThrown);
-				clearInterval(Network.interval);
-				Network.offline = true;
-				$('#online').html('connection lost');
-			}
+			Network.error
 		);
 	},
 
@@ -91,16 +94,14 @@ var Network = {
 					Game.state = game.state;
 					Game.draw();
 					$('#turn').html('Current turn: ' + Game.colorString(Game.turn));
+					Game.checkForCheck();
+					if ((Game.blackCheck || Game.redCheck) && Game.checkForCheckmate())
+						Game.finish();
 				} else {
 					Network.interval = setInterval(Network.waitMove, 1000);
 				}
 			},
-			function (jqXHR, textStatus, errorThrown) {
-				console.log(textStatus + ' ' + errorThrown);
-				clearInterval(Network.interval);
-				Network.offline = true;
-				$('#online').html('connection lost');
-			}
+			Network.error
 		);
 	},
 
@@ -117,12 +118,20 @@ var Network = {
 				// wait for opponent to move
 				Network.interval = setInterval(Network.waitMove, 1000);
 			},
-			function (jqXHR, textStatus, errorThrown) {
-				console.log(textStatus + ' ' + errorThrown);
-				clearInterval(Network.interval);
-				Network.offline = true;
-				$('#online').html('connection lost');
-			}
+			Network.error
+		);
+	},
+
+	// tells the server the game is over
+	finish: function () {
+		Network.send({
+				command: 'endGame',
+				game: Network.gameID
+			},
+			function (data) {
+				$('#online').html('<a href="javascript:Network.initialize()">Go online</a>');
+			},
+			Network.error
 		);
 	}
 
