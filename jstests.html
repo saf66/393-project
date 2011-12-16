@@ -49,9 +49,9 @@
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0]
 		];
-		for (var y = 0; x < 8; x++)
-			for (var x = 0; y < 8; y++)
-				assert(Game.validateMove("", here, [x, y], null) == (a[x][y] == 1));
+		for (var x = 0; x < 8; x++)
+			for (var y = 0; y < 8; y++)
+				assert(Game.validateMove("", here, [x, y], null) == (a[y][x] == 1));
 	}
 	function testKingMoves() {
 		var a = [
@@ -64,9 +64,11 @@
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0]
 		];
-		for (var y = 0; x < 8; x++)
-			for (var x = 0; y < 8; y++)
-				assert(Game.validateMove("king", here, [x, y], 1) == (a[x][y] == 1));
+		for (var x = 0; x < 8; x++)
+			for (var y = 0; y < 8; y++) {
+				assert(Game.validateMove("king", here, [x, y], 0) == (a[y][x] == 1));
+				assert(Game.validateMove("king", here, [x, y], 1) == (a[y][x] == 1));
+			}
 	}
 	function testRookMoves() {
 		var a = [
@@ -79,9 +81,11 @@
 			[0, 0, 0, 1, 0, 0, 0, 0],
 			[0, 0, 0, 1, 0, 0, 0, 0]
 		];
-		for (var y = 0; x < 8; x++)
-			for (var x = 0; y < 8; y++)
-				assert(Game.validateMove("rook", here, [x, y], 1) == (a[x][y] == 1));
+		for (var x = 0; x < 8; x++)
+			for (var y = 0; y < 8; y++) {
+				assert(Game.validateMove("rook", here, [x, y], 0) == (a[y][x] == 1));
+				assert(Game.validateMove("rook", here, [x, y], 1) == (a[y][x] == 1));
+			}
 	}
 	function testBishopMoves() {
 		var a = [
@@ -94,9 +98,11 @@
 			[1, 0, 0, 0, 0, 0, 1, 0],
 			[0, 0, 0, 0, 0, 0, 0, 1]
 		];
-		for (var y = 0; x < 8; x++)
-			for (var x = 0; y < 8; y++)
-				assert(Game.validateMove("bishop", here, [x, y], 1) == (a[x][y] == 1));
+		for (var x = 0; x < 8; x++)
+			for (var y = 0; y < 8; y++) {
+				assert(Game.validateMove("bishop", here, [x, y], 0) == (a[y][x] == 1));
+				assert(Game.validateMove("bishop", here, [x, y], 1) == (a[y][x] == 1));
+			}
 	}
 	function testQueenMoves() {
 		var a = [
@@ -109,9 +115,11 @@
 			[1, 0, 0, 1, 0, 0, 1, 0],
 			[0, 0, 0, 1, 0, 0, 0, 1]
 		];
-		for (var y = 0; x < 8; x++)
-			for (var x = 0; y < 8; y++)
-				assert(Game.validateMove("queen", here, [x, y], 1) == (a[x][y] == 1));
+		for (var x = 0; x < 8; x++)
+			for (var y = 0; y < 8; y++) {
+				assert(Game.validateMove("queen", here, [x, y], 0) == (a[y][x] == 1));
+				assert(Game.validateMove("queen", here, [x, y], 1) == (a[y][x] == 1));
+			}
 	}
 	function testKnightMoves() {
 		var a = [
@@ -124,9 +132,11 @@
 			[0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0]
 		];
-		for (var y = 0; x < 8; x++)
-			for (var x = 0; y < 8; y++)
-				assert(Game.validateMove("knight", here, [x, y], 1) == (a[x][y] == 1));
+		for (var x = 0; x < 8; x++)
+			for (var y = 0; y < 8; y++) {
+				assert(Game.validateMove("knight", here, [x, y], 0) == (a[y][x] == 1));
+				assert(Game.validateMove("knight", here, [x, y], 1) == (a[y][x] == 1));
+			}
 	}
 	function testWhitePawnMoves() {
 		var a = [
