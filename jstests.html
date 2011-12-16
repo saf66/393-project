@@ -184,6 +184,68 @@
 			assert(Game.state[i][6].type == 'pawn' && Game.state[i][6].color == 1);
 		}
 	}
+	function testColorString() {
+		assert(Game.colorString(0) == 'black');
+		assert(Game.colorString(1) == 'white');
+	}
+	function testChooseWhitePiece() {
+		Game.state = [];
+		Game.color = 1;
+		Game.canvas = document.getElementById('canvas');
+		Game.initialize();
+		var a = [
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 1, 1]
+		];
+		for (var y = 0; y < 8; y++)
+			for (var x = 0; x < 8; x++) {
+				var event = {
+					offsetX: x * 50 + 25,
+					offsetY: y * 50 + 25
+				};
+				var piece = Game.getPieceAt([x, y]);
+				assert(Game.choosePiece(event) == (a[y][x] == 1));
+				$(Game.canvas).unbind('click', Game.choosePiece);
+				$(Game.canvas).unbind('mousemove', Game.movePiece);
+				$(Game.canvas).unbind('click', Game.placePiece);
+				Game.setPieceAt([x, y], piece);
+			}
+	}
+	function testChooseBlackPiece() {
+		Game.state = [];
+		Game.color = 0;
+		Game.canvas = document.getElementById('canvas');
+		Game.initialize();
+		var a = [
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 1, 1, 1, 1],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0]
+		];
+		for (var y = 0; y < 8; y++)
+			for (var x = 0; x < 8; x++) {
+				var event = {
+					offsetX: x * 50 + 25,
+					offsetY: y * 50 + 25
+				};
+				var piece = Game.getPieceAt([x, y]);
+				assert(Game.choosePiece(event) == (a[y][x] == 1));
+				$(Game.canvas).unbind('click', Game.choosePiece);
+				$(Game.canvas).unbind('mousemove', Game.movePiece);
+				$(Game.canvas).unbind('click', Game.placePiece);
+				Game.setPieceAt([x, y], piece);
+			}
+	}
 </script>
 </body>
 </html>

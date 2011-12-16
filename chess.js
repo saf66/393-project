@@ -150,18 +150,18 @@ var Game = {
 		// check if there's a piece here
 		var piece = Game.getPieceAt(grid);
 		if (piece == null) {
-			return;
+			return false;
 		}
 		console.log('piece detected: %o %o', piece.type, piece.color);
 
 		// check if current player is allowed to select that piece
 		if (Game.color != piece.color) {
 			console.log('tried to select opponent piece');
-			return;
+			return false;
 		}
 		if (!Network.offline && Game.turn != Game.color) {
 			console.log('tried to select piece out of turn');
-			return;
+			return false;
 		}
 
 		// snap the piece to the mouse
@@ -179,6 +179,7 @@ var Game = {
 		// store previous piece
 		Game.previous.piece = piece;
 		Game.previous.grid = grid;
+		return true;
 	},
 
 	getPieceAt: function (grid) {
